@@ -1,0 +1,22 @@
+import sounddevice as sd
+import numpy as np
+import serial
+import time
+
+arduino=serial.Serial('COM6', 9600)
+def print_sound(indata, outdata, frames, time, status):
+    volume_norm = np.linalg.norm(indata)*10
+    a = (int(volume_norm))
+    if a > 0:
+        arduino.write(b'1')
+        print("-" * (int(volume_norm)))
+    if a > 20:
+        arduino.write(b'2')
+        print("-" * (int(volume_norm)))
+    if a == 0:
+        arduino.write(b'0')
+        print("-" * (int(volume_norm)))
+while True:
+    with sd.Stream(callback=print_sound):
+        sd.sleep(10000)
+
